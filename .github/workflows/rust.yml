@@ -20,3 +20,8 @@ jobs:
       run: cargo test --verbose
     - name: Build
       run: cargo build --verbose
+    - name: Publish
+      run: cargo publish --token ${CRATES_TOKEN}
+      env:
+        CRATES_TOKEN: ${{ secrets.CRATESIO_2024 }}
+
