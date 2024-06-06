@@ -108,7 +108,7 @@ pub fn json_update<'a>(data: &'a mut Value, path: &str, new_value: Value) -> Opt
     sel_data.cloned()
 }
 
-pub fn json_get_paths2(data: &Value, symbol: Option<String>) -> Vec<String> {
+pub fn json_get_paths(data: &Value, symbol: Option<String>) -> Vec<String> {
     let symbol = symbol.unwrap_or("$".to_string());
     let mut ret: Vec<String> = vec![];
     if data.is_object() {
@@ -274,7 +274,7 @@ mod tests {
             }
         "#;
         let json_data: Result<Value> = serde_json::from_str(json_str);
-        let paths: Vec<String> = json_get_paths2(
+        let paths: Vec<String> = json_get_paths(
             json_data.as_ref().unwrap(), None);
         assert_eq!(paths.len(), 5);
         assert_eq!(paths[0], "$");
