@@ -115,7 +115,7 @@ pub fn json_get_paths(data: &Value, symbol: Option<String>) -> Vec<String> {
         ret.push(symbol.clone());
         for key_s in data.as_object().unwrap().keys() {
             let child = data.as_object().unwrap().get(key_s).unwrap();
-            for path in json_get_paths2(child, Some(key_s.to_string())) {
+            for path in json_get_paths(child, Some(key_s.to_string())) {
                 ret.push([symbol.clone(), path].join("."));
             }
         }
