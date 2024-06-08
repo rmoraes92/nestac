@@ -119,7 +119,16 @@ pub fn json_get_paths(data: &Value, symbol: Option<String>) -> Vec<String> {
                 ret.push([symbol.clone(), path].join("."));
             }
         }
-    } else {
+    }
+    else if data.is_array() {
+        ret.push(symbol.clone());
+        for (i, child) in data.as_array().unwrap().iter().enumerate() {
+            for path in json_get_paths(&child, Some(i.to_string())) {
+                ret.push([symbol.clone(), path].join("."));
+            }
+        }
+    }
+    else {
         ret.push(symbol.clone());
     }
     println!("{} - {:?}", &symbol, &ret);
@@ -282,5 +291,28 @@ mod tests {
         assert_eq!(paths[2], "$.foo.bar");
         assert_eq!(paths[3], "$.hello");
         assert_eq!(paths[4], "$.hello.world");
+
+        let json_str = r#"
+            {
+                "foo": {
+                    "bar": ["bingo!"]
+                },
+                "hello": [
+                    "world",
+                    "!"
+                ]
+            }
+        "#;
+        let json_data: Result<Value> = serde_json::from_str(json_str);
+        let paths: Vec<String> = json_get_paths(
+            json_data.as_ref().unwrap(), None);
+        assert_eq!(paths.len(), 7);
+        assert_eq!(paths[0], "$");
+        assert_eq!(paths[1], "$.foo");
+        assert_eq!(paths[2], "$.foo.bar");
+        assert_eq!(paths[3], "$.foo.bar.0");
+        assert_eq!(paths[4], "$.hello");
+        assert_eq!(paths[5], "$.hello.0");
+        assert_eq!(paths[6], "$.hello.1");
     }
 }
