@@ -25,10 +25,11 @@ checksum = "523dc4f511e55ab87b694dc30d0f820d60906ef06413f93d4d7a1385599cc149"
 
 [[package]]
 name = "nestac"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "regex",
  "serde_json",
+ "string_from",
 ]
 
 [[package]]
@@ -114,6 +115,12 @@ dependencies = [
  "ryu",
  "serde",
 ]
+
+[[package]]
+name = "string_from"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bc60dde4574d2e6fbe9d5f694509fb77da9e664356ad545e156a529444238459"
 
 [[package]]
 name = "syn"
