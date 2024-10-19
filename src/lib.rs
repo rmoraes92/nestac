@@ -1,27 +1,21 @@
 //! # Nestac
 //! _(short for (ne)sted (st)ructure (ac)cess)_ is library to access nested
 //! structures using path-like string format.
-//! 
+//!
 //! If you work with Python you're probably familiar with
 //! [glom](https://glom.readthedocs.io/en/latest/) and that is where the ideia
 //! came from.
-//! 
+//!
 //! The necessity to make an implementation in Rust comes from a project
 //! initially developed in Python that had to loop through of .json files to
 //! update their properties using
 //! [glom](https://glom.readthedocs.io/en/latest/).
-//! 
+//!
 //! Once we start increase the workload to 1k+ inputs the Python script started
 //! to present performance issues. That lead to the decision of rewrite the
 //! application using Rust but it would still need to support the path strings
 //! to make the property updates like.
-//! 
+//!
 //! So here we are.
 
-pub mod json_read;
-pub mod json_update;
-pub mod json_paths;
-
-pub use json_read::json_read;
-pub use json_update::json_update;
-pub use json_paths::json_get_paths;
+pub mod json;
