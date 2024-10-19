@@ -14,15 +14,15 @@ properties using [glom](https://glom.readthedocs.io/en/latest/).
 Once we start increase the workload to 1k+ inputs the Python script started to
 present performance issues. That lead to the decision of rewrite the
 application using Rust but it would still need to support the path strings
-to make the property updates like.
+to make the property updates just like with [glom](https://glom.readthedocs.io/en/latest/).
 
-So here we are.
 
 ## Installation
 
 - `cargo add nestac`
 
 - `cargo add --git https://github.com/mitternacht92/nestac`
+
 
 ## Usage
 
@@ -36,7 +36,7 @@ fn main() {
     let key_path = "foo.bar";
     let json_str = r#"{"foo": {"bar": "bingo!"}}"#;
     let json_data: Value = serde_json::from_str(json_str).unwrap();
-    let val: Option<&Value> = json_read(key_path, &json_data);
+    let val: Option<&Value> = json_read(key_path, &json_data, None);
     assert_eq!(val.unwrap(), "bingo!");
 }
 ```
@@ -50,13 +50,15 @@ use nestac::json_read;
 fn main() {
     let json_str = r#"{"foo": {"bar": "bingo!"}}"#;
 
-    let mut json_data: Result<Value> = serde_json::from_str(json_str);
+    let mut json_data: Result<Value, _> = serde_json::from_str(json_str);
+
     assert_eq!(json_data.is_ok(), true);
 
     let old_val = json_update(
         json_data.as_mut().unwrap(),
         "foo.bar",
-        Value::String("updated!".into())
+        None,
+        Value::String("updated!".into()),
     );
 
     assert_eq!(old_val.is_none(), false);
@@ -64,11 +66,42 @@ fn main() {
 
     let new_val: Option<&Value> = json_read(
         "foo.bar",
-        json_data.as_ref().unwrap()
+        json_data.as_ref().unwrap(),
+        None,
     );
-
     assert_eq!(new_val.is_none(), false);
     assert_eq!(new_val.unwrap(), "updated!");
+}
+```
+
+- generate a list of possible key-paths
+
+```
+use serde_json::Value;
+use nestac::json_get_paths;
+
+fn main() {
+    let json_str = r#"
+    {
+        "foo": {
+            "bar": "bingo!"
+        },
+        "hello": {
+            "world": "!"
+        }
+    }
+    "#;
+    let json_data: Result<Value, _> = serde_json::from_str(json_str);
+    let paths: Vec<String> = json_get_paths(
+        json_data.as_ref().unwrap(),
+        None,
+    );
+    assert_eq!(paths.len(), 5);
+    assert_eq!(paths[0], "$");
+    assert_eq!(paths[1], "$.foo");
+    assert_eq!(paths[2], "$.foo.bar");
+    assert_eq!(paths[3], "$.hello");
+    assert_eq!(paths[4], "$.hello.world");
 }
 ```
 
