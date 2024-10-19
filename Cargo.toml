@@ -1,15 +1,19 @@
 [package]
 name = "nestac"
-version = "0.3.1"
+version = "0.4.0"
 edition = "2021"
 authors = ["Ramon Moraes <mitternacht92.pub@gmail.com>"]
 description = "library to access nested structures using path-like string format."
 license = "MIT"
 documentation = "https://docs.rs/nestac/latest/nestac/"
-homepage = "https://github.com/mitternacht92/nestac"
-repository = "https://github.com/mitternacht92/nestac"
+homepage = "https://github.com/rmoraes92/nestac"
+repository = "https://github.com/rmoraes92/nestac"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 regex = "1.10.3"
 serde_json = "1.0.114"
+
+[dev-dependencies]
+string_from = "0.1.0"
