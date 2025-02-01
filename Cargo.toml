@@ -2,7 +2,7 @@
 name = "nestac"
 version = "0.4.1"
 edition = "2021"
-authors = ["Ramon Moraes <mitternacht92.pub@gmail.com>"]
+authors = ["Ramon Moraes <ramonmoraes.foss@gmail.com>"]
 description = "library to access nested structures using path-like string format."
 license = "MIT"
 documentation = "https://docs.rs/nestac/latest/nestac/"

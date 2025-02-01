@@ -113,7 +113,7 @@ fn main() {
 
 The MIT License (MIT)
 
-Copyright © 2024 Ramon Moraes <mitternacht92.pub@gmail.com>
+Copyright © 2024 Ramon Moraes <ramonmoraes.foss@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
