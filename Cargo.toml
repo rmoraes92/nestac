@@ -1,6 +1,6 @@
 [package]
 name = "nestac"
-version = "0.4.1"
+version = "0.4.2"
 edition = "2021"
 authors = ["Ramon Moraes <ramonmoraes.foss@gmail.com>"]
 description = "library to access nested structures using path-like string format."
