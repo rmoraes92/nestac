@@ -19,3 +19,4 @@
 //! So here we are.
 
 pub mod json;
+pub mod toml;
