@@ -19,24 +19,20 @@ to make the property updates just like with [glom](https://glom.readthedocs.io/e
 
 ## Installation
 
-- `cargo add nestac`
-
-- `cargo add --git https://github.com/mitternacht92/nestac`
-
+`cargo add nestac`
 
 ## Usage
 
 - reading nested json value
 
 ```rust
-use serde_json::Value;
-use nestac::json_read;
+use serde_json::{json, Value};
+use nestac::json::read;
 
 fn main() {
+    let json_body = json!({"foo": {"bar": "bingo!"}});
     let key_path = "foo.bar";
-    let json_str = r#"{"foo": {"bar": "bingo!"}}"#;
-    let json_data: Value = serde_json::from_str(json_str).unwrap();
-    let val: Option<&Value> = json_read(key_path, &json_data, None);
+    let val: Option<&Value> = read(key_path, &json_body, None);
     assert_eq!(val.unwrap(), "bingo!");
 }
 ```
@@ -44,18 +40,14 @@ fn main() {
 - updating nested json value
 
 ```rust
-use serde_json::Value;
-use nestac::json_read;
+use serde_json::{json, Value};
+use nestac::json::{read, update};
 
 fn main() {
-    let json_str = r#"{"foo": {"bar": "bingo!"}}"#;
+    let mut json_body = json!({"foo": {"bar": "bingo!"}});
 
-    let mut json_data: Result<Value, _> = serde_json::from_str(json_str);
-
-    assert_eq!(json_data.is_ok(), true);
-
-    let old_val = json_update(
-        json_data.as_mut().unwrap(),
+    let old_val = update(
+        &mut json_body,
         "foo.bar",
         None,
         Value::String("updated!".into()),
@@ -64,9 +56,9 @@ fn main() {
     assert_eq!(old_val.is_none(), false);
     assert_eq!(old_val.unwrap(), "bingo!");
 
-    let new_val: Option<&Value> = json_read(
+    let new_val: Option<&Value> = read(
         "foo.bar",
-        json_data.as_ref().unwrap(),
+        &json_body,
         None,
     );
     assert_eq!(new_val.is_none(), false);
@@ -76,32 +68,28 @@ fn main() {
 
 - generate a list of possible key-paths
 
-```
-use serde_json::Value;
-use nestac::json_get_paths;
+```rust
+use serde_json::json;
+use nestac::json::get_paths;
 
 fn main() {
-    let json_str = r#"
-    {
+    let json_body = json!({
         "foo": {
             "bar": "bingo!"
         },
         "hello": {
             "world": "!"
         }
-    }
-    "#;
-    let json_data: Result<Value, _> = serde_json::from_str(json_str);
-    let paths: Vec<String> = json_get_paths(
-        json_data.as_ref().unwrap(),
-        None,
+    });
+    let paths: Vec<String> = get_paths(
+        &json_body,
     );
     assert_eq!(paths.len(), 5);
     assert_eq!(paths[0], "$");
-    assert_eq!(paths[1], "$.foo");
-    assert_eq!(paths[2], "$.foo.bar");
-    assert_eq!(paths[3], "$.hello");
-    assert_eq!(paths[4], "$.hello.world");
+    assert_eq!(paths[1], "$.hello");
+    assert_eq!(paths[2], "$.hello.world");
+    assert_eq!(paths[3], "$.foo");
+    assert_eq!(paths[4], "$.foo.bar");
 }
 ```
 
