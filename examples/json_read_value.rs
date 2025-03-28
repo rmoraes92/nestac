@@ -1,5 +1,5 @@
-use serde_json::{json, Value};
 use nestac::json::read;
+use serde_json::{json, Value};
 
 fn main() {
     let json_body = json!({"foo": {"bar": "bingo!"}});

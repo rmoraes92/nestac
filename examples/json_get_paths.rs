@@ -1,5 +1,5 @@
-use serde_json::json;
 use nestac::json::get_paths;
+use serde_json::json;
 
 fn main() {
     let json_body = json!({
@@ -10,9 +10,7 @@ fn main() {
             "world": "!"
         }
     });
-    let paths: Vec<String> = get_paths(
-        &json_body,
-    );
+    let paths: Vec<String> = get_paths(&json_body);
     assert_eq!(paths.len(), 5);
     assert_eq!(paths[0], "$");
     assert_eq!(paths[1], "$.hello");
