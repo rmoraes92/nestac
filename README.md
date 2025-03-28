@@ -16,18 +16,20 @@ present performance issues. That lead to the decision of rewrite the application
 using Rust but it would still need to support the path strings to make the
 property updates just like with [glom](https://glom.readthedocs.io/en/latest/).
 
-## Supported Structures
+## 1. Supported Structures
 
 - json
 - toml
 
-## Installation
+## 2. Installation
 
 `cargo add nestac`
 
-## Usage
+## 3. Usage
 
-- reading nested json value
+### 3.1 Reading Nested Value
+
+#### 3.1.1 JSON
 
 ```rust
 use serde_json::{json, Value};
@@ -41,7 +43,27 @@ fn main() {
 }
 ```
 
-- updating nested json value
+#### 3.1.2 TOML
+
+```rust
+use nestac::toml_read;
+use toml::{toml, Value};
+
+fn main() {
+    let toml_body = toml!(
+        [foo]
+        bar = "bingo!"
+    );
+    let key_path = "foo.bar";
+    let val: Option<&Value> = toml_read(key_path, &toml_body, None);
+    assert_eq!(val.is_some(), true);
+    assert_eq!(val.unwrap().as_str().unwrap(), "bingo!");
+}
+```
+
+### 3.2 Updating Nested Json Value
+
+#### 3.2.1 JSON
 
 ```rust
 use serde_json::{json, Value};
@@ -70,7 +92,37 @@ fn main() {
 }
 ```
 
-- generate a list of possible key-paths
+#### 3.2.2 TOML
+
+```rust
+use nestac::{toml_read, toml_update};
+use toml::{toml, Value};
+
+fn main() {
+    let mut toml_body = toml!(
+        [foo]
+        bar = "bingo!"
+    );
+
+    let old_val = toml_update(
+        &mut toml_body,
+        "foo.bar",
+        None,
+        Value::String("updated!".into()),
+    );
+
+    assert_eq!(old_val.is_none(), false);
+    assert_eq!(old_val.unwrap().as_str().unwrap(), "bingo!");
+
+    let new_val: Option<&Value> = toml_read("foo.bar", &toml_body, None);
+    assert_eq!(new_val.is_none(), false);
+    assert_eq!(new_val.unwrap().as_str().unwrap(), "updated!");
+}
+```
+
+### 3.3 generate a list of possible key-paths
+
+#### 3.3.1 JSON
 
 ```rust
 use serde_json::json;
@@ -97,7 +149,29 @@ fn main() {
 }
 ```
 
-## Examples
+#### 3.3.2 TOML
+
+```rust
+use nestac::toml_get_paths;
+use toml::toml;
+
+fn main() {
+    let toml_body = toml!(
+        [foo]
+        bar = "bingo!"
+        [hello]
+        world = "!"
+    );
+    let paths: Vec<String> = toml_get_paths(&toml_body);
+    assert_eq!(paths.len(), 4);
+    assert_eq!(paths[0], "foo");
+    assert_eq!(paths[1], "foo.bar");
+    assert_eq!(paths[2], "hello");
+    assert_eq!(paths[3], "hello.world");
+}
+```
+
+## 4. Examples
 
 - `cargo run --example json_get_paths`
 - `cargo run --example json_read_value`
