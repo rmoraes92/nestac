@@ -1,7 +1,43 @@
 use regex::Regex;
 use toml::{map::Map, Value};
 
-pub fn toml_read<'a>(
+/// Return a [Value] based off the token-based [str] path.
+///
+/// # Examples:
+/// - Reading a TOML data using the default token-separator: `.`
+/// ```rust
+/// use nestac::toml_read;
+/// use toml::{toml, Value};
+///
+/// fn main() {
+///     let toml_body = toml!(
+///         [foo]
+///         bar = "bingo!"
+///     );
+///     let key_path = "foo.bar";
+///     let val: Option<&Value> = toml_read(key_path, &toml_body, None);
+///     assert_eq!(val.is_some(), true);
+///     assert_eq!(val.unwrap().as_str().unwrap(), "bingo!");
+/// }
+/// ```
+/// - Reading a TOML data using a custom token-separator: `@`
+/// ```rust
+/// use nestac::toml_read;
+/// use toml::{toml, Value};
+///
+/// fn main() {
+///     let toml_body = toml!(
+///         [foo]
+///         bar = "bingo!"
+///     );
+///     let key_path = "foo@bar";
+///     let sep = Some("@");
+///     let val: Option<&Value> = toml_read(key_path, &toml_body, sep);
+///     assert_eq!(val.is_some(), true);
+///     assert_eq!(val.unwrap().as_str().unwrap(), "bingo!");
+/// }
+/// ```
+pub fn read<'a>(
     path: &str,
     data: &'a Map<String, Value>,
     separator: Option<&str>,
@@ -46,8 +82,19 @@ mod tests {
             [foo]
             bar = "hello"
         };
-        dbg!(&toml_body);
-        let val = toml_read("foo.bar", &toml_body, None);
+        let val = read("foo.bar", &toml_body, None);
+        assert!(val.is_some());
+        assert_eq!(val.unwrap().as_str().unwrap(), "hello");
+    }
+
+    #[test]
+    fn test_flat_toml_custom_separator() {
+        let toml_body = toml! {
+            [foo]
+            bar = "hello"
+        };
+        let sep = Some("@");
+        let val = read("foo@bar", &toml_body, sep);
         assert!(val.is_some());
         assert_eq!(val.unwrap().as_str().unwrap(), "hello");
     }
@@ -59,7 +106,7 @@ mod tests {
             bar = ["hello", "world"]
         };
         dbg!(&toml_body);
-        let val = toml_read("foo.bar.[1]", &toml_body, None);
+        let val = read("foo.bar.[1]", &toml_body, None);
         assert!(val.is_some());
         assert_eq!(val.unwrap().as_str().unwrap(), "world");
     }
@@ -71,8 +118,7 @@ mod tests {
             [foo.bar]
             baz = "hello"
         };
-        dbg!(&toml_body);
-        let val = toml_read("foo.bar.baz", &toml_body, None);
+        let val = read("foo.bar.baz", &toml_body, None);
         assert_eq!(val.unwrap().as_str().unwrap(), "hello");
     }
 
@@ -83,8 +129,7 @@ mod tests {
             [foo.bar]
             baz = ["hello", "world"]
         };
-        dbg!(&toml_body);
-        let val = toml_read("foo.bar.baz.[1]", &toml_body, None);
+        let val = read("foo.bar.baz.[1]", &toml_body, None);
         assert_eq!(val.unwrap().as_str().unwrap(), "world");
     }
 
@@ -95,8 +140,7 @@ mod tests {
             [foo.bar]
             baz = ["hello", {inner = "world"}]
         };
-        dbg!(&toml_body);
-        let val = toml_read("foo.bar.baz.[1].inner", &toml_body, None);
+        let val = read("foo.bar.baz.[1].inner", &toml_body, None);
         assert_eq!(val.unwrap().as_str().unwrap(), "world");
     }
 }
