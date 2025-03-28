@@ -19,3 +19,10 @@
 //! So here we are.
 
 pub mod json;
+pub mod toml;
+
+pub use json::read as json_read;
+pub use json::update as json_update;
+pub use toml::get_paths as toml_get_paths;
+pub use toml::read as toml_read;
+pub use toml::update as toml_update;
