@@ -31,7 +31,11 @@ use serde_json::Value;
 ///     assert_eq!(val.unwrap(), "bingo!");
 /// }
 /// ```
-pub fn read<'a>(path: &str, data: &'a Value, separator: Option<&str>) -> Option<&'a Value> {
+pub fn read<'a>(
+    path: &str,
+    data: &'a Value,
+    separator: Option<&str>,
+) -> Option<&'a Value> {
     let tokens = path.split(separator.unwrap_or(".")).collect::<Vec<&str>>();
     let re_vec_idx = Regex::new(r"^\[(\d+)\]$").unwrap();
     let mut sel_data = Some(data);
@@ -65,7 +69,8 @@ mod tests {
         let json_str = r#"{"foo": "bar"}"#;
         let json_data: Result<Value> = serde_json::from_str(json_str);
         assert_eq!(json_data.is_ok(), true);
-        let val: Option<&Value> = read(json_keypath, json_data.as_ref().unwrap(), json_separator);
+        let val: Option<&Value> =
+            read(json_keypath, json_data.as_ref().unwrap(), json_separator);
         assert_eq!(val.is_none(), false);
         assert_eq!(val.unwrap(), "bar");
     }
@@ -77,7 +82,8 @@ mod tests {
         let json_str = r#"{"foo": {"bar": "bingo!"}}"#;
         let json_data: Result<Value> = serde_json::from_str(json_str);
         assert_eq!(json_data.is_ok(), true);
-        let val: Option<&Value> = read(json_keypath, json_data.as_ref().unwrap(), json_separator);
+        let val: Option<&Value> =
+            read(json_keypath, json_data.as_ref().unwrap(), json_separator);
         assert_eq!(val.is_none(), false);
         assert_eq!(val.unwrap(), "bingo!");
     }
@@ -89,7 +95,8 @@ mod tests {
         let json_str = r#"{"foo": {"bar": "bingo!"}}"#;
         let json_data: Result<Value> = serde_json::from_str(json_str);
         assert_eq!(json_data.is_ok(), true);
-        let val: Option<&Value> = read(json_keypath, json_data.as_ref().unwrap(), json_separator);
+        let val: Option<&Value> =
+            read(json_keypath, json_data.as_ref().unwrap(), json_separator);
         assert_eq!(val.is_none(), false);
         assert_eq!(val.unwrap(), "bingo!");
     }
@@ -101,7 +108,8 @@ mod tests {
         let json_str = r#"{"foo": ["bingo!"]}"#;
         let json_data: Result<Value> = serde_json::from_str(json_str);
         assert_eq!(json_data.is_ok(), true);
-        let val: Option<&Value> = read(&json_keypath, json_data.as_ref().unwrap(), json_separator);
+        let val: Option<&Value> =
+            read(&json_keypath, json_data.as_ref().unwrap(), json_separator);
         assert_eq!(val.is_none(), false);
         assert_eq!(val.unwrap(), "bingo!");
     }
@@ -113,7 +121,8 @@ mod tests {
         let json_str = r#"{"foo": [{"bar": "bingo!"}]}"#;
         let json_data: Result<Value> = serde_json::from_str(json_str);
         assert_eq!(json_data.is_ok(), true);
-        let val: Option<&Value> = read(&json_keypath, json_data.as_ref().unwrap(), json_separator);
+        let val: Option<&Value> =
+            read(&json_keypath, json_data.as_ref().unwrap(), json_separator);
         assert_eq!(val.is_none(), false);
         assert_eq!(val.unwrap(), "bingo!");
     }
