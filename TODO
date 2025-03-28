@@ -1,0 +1,4 @@
+[] Double check READMEs documentation
+[] Make a decision about leaving only JSON documentation on README
+[] On json/paths.rs - maybe remove the $ from the result? OR add it to the TOML
+[] Add support to YAML ?
